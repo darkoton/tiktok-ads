@@ -178,7 +178,7 @@ const template = function (title, collection, type) {
 let timer = null;
 
 function update() {
-  fetch('https://tiktok-test.onrender.com/update', {
+  fetch('/update', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -329,7 +329,7 @@ function render() {
 }
 
 let data;
-fetch('https://tiktok-test.onrender.com/data', {
+fetch('/data', {
   method: 'GET',
 }).then(res => {
   res.json().then(result => {
