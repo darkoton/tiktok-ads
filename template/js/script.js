@@ -274,6 +274,26 @@
     } else {
       newData = JSON.parse(JSON.stringify(dataPerfor[activeTab].data));
     }
+
+    if (!newData.length) {
+      newData = JSON.parse(JSON.stringify([dataPerfor[activeTab].data[0]]))
+
+      newData[0].date = null
+      newData[0].data = newData[0].data.map((e) => {
+        e.value = 0.000001
+        e.empty = true
+
+        if (e.data) {
+          e.data = e.data.map((r) => {
+            r.value = 0
+            return r
+          })
+        }
+
+        return e
+      })
+    }
+
     newData = newData.reduce((prev, curr) => {
       if (prev.length === 0) {
         prev.push(...curr.data);
@@ -294,6 +314,8 @@
 
     return newData
       .map(item => {
+        console.log(item);
+
         return `<li class="performance__spoller ${!item.data ? 'not-spoller' : ''}">
             <span class="performance__spoller-title _active" ${item.data ? 'data-spoller' : ''}>
               <div class="performance__spoller-left">
@@ -302,7 +324,7 @@
                 <a href="#" class="performance__spoller-details">Details</a>
               </div>
 
-              <span class="item-value">${item.value}${item.units}</span>
+              <span class="item-value">${!item.empty ? item.value : 0}${item.units}</span>
             </span>
 
            ${item.data
@@ -464,17 +486,16 @@
       newData[0].data = newData[0].data.map((e) => {
         e.value = 0.01
 
+        if (e.data) {
+          e.data = e.data.map((r) => {
+            r.value = 0
+            return r
+          })
+        }
+
         return e
       })
-
     }
-
-    console.log(newData);
-
-
-
-
-
 
     perforChart.data.datasets[0].data = newData
       .reduce((prev, curr) => {
