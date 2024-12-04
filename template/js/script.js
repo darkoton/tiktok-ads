@@ -314,8 +314,6 @@
 
     return newData
       .map(item => {
-        console.log(item);
-
         return `<li class="performance__spoller ${!item.data ? 'not-spoller' : ''}">
             <span class="performance__spoller-title _active" ${item.data ? 'data-spoller' : ''}>
               <div class="performance__spoller-left">
