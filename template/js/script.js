@@ -42,7 +42,6 @@
     metricChart.update();
   }
 
-  window.updateChartMetric=updateChartMetric
 
   const widgetsContainer = document.querySelector('#widgets');
 
@@ -111,8 +110,17 @@
     },
   });
 
-  Object.keys(dataMetric).forEach(wg => {
-    widgetsContainer.innerHTML += `
+  let slick = null
+  function renderWidgets() {
+
+    if (slick) {
+      $('.metric__slider').slick('unslick')
+      slick = null
+    }
+
+    widgetsContainer.innerHTML = ''
+    Object.keys(dataMetric).forEach(wg => {
+      widgetsContainer.innerHTML += `
             <label for="${wg}" class="metric__widget">
           <div class="metric__widget-top">
             <input id="${wg}" data-title="${dataMetric[wg].title}" type="checkbox" class="metric__widget-checkbox">
@@ -124,10 +132,24 @@
             <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M7.11875 9.35063V7.5968L7.71608 7.5648C8.49475 7.5328 9.00787 7.10843 9.00787 6.45996 9.00787 5.81149 8.56942 5.45729 7.89742 5.45729 7.24675 5.45729 6.72008 5.77596 6.60275 6.49063L5.16675 6.25729C5.34808 4.93463 6.42542 4.16663 8.01475 4.16663 9.51088 4.16663 10.5654 5.05196 10.5654 6.41729 10.5654 7.51596 9.8403 8.30435 8.70808 8.51863V9.35063H7.11875zM6.87341 10.908C6.87341 10.332 7.31075 9.89463 7.89742 9.89463 8.48408 9.89463 8.91075 10.332 8.91075 10.908 8.91075 11.4733 8.48408 11.9106 7.89742 11.9106 7.31075 11.9106 6.87341 11.4733 6.87341 10.908z" fill-opacity="1"></path><path d="M0.666748 7.99996C0.666748 3.94987 3.94999 0.666626 8.00008 0.666626C12.0502 0.666626 15.3334 3.94987 15.3334 7.99996C15.3334 12.05 12.0502 15.3333 8.00008 15.3333C3.94999 15.3333 0.666748 12.05 0.666748 7.99996ZM8.00008 14C11.3138 14 14.0001 11.3137 14.0001 7.99996C14.0001 4.68625 11.3138 1.99996 8.00008 1.99996C4.68637 1.99996 2.00008 4.68625 2.00008 7.99996C2.00008 11.3137 4.68637 14 8.00008 14Z" fill-opacity="1"></path></svg>
           </button>
             </div>
-          <div class="metric__widget-value"> ${dataMetric[wg].data.reduce((prev, curr) => (prev += +curr.y), 0)}${dataMetric[wg].units ? dataMetric[wg].units : ''}</div>
+          <div class="metric__widget-value"> ${dataMetric[wg].data.reduce((prev, curr) => {
+
+        prev += +(window.datapickerValue ? (window.datapickerValue.includes(curr.x) ? curr.y : 0) : curr.y)
+        return prev
+      }, 0)}${dataMetric[wg].units ? dataMetric[wg].units : ''}</div>
         </label>    
   `;
-  });
+    });
+
+    slick = $('.metric__slider').slick({
+      infinite: false,
+      slidesToShow: 4,
+      slidesToScroll: 4,
+      prevArrow: '.metric__slider-prev',
+      nextArrow: '.metric__slider-next',
+    });
+  }
+  renderWidgets()
 
   // renter tooltip
   document.querySelectorAll('.metric__widget').forEach(label => {
@@ -143,14 +165,6 @@
       allowHTML: true,
       animation: 'scale',
     });
-  });
-
-  $('.metric__slider').slick({
-    infinite: false,
-    slidesToShow: 4,
-    slidesToScroll: 4,
-    prevArrow: '.metric__slider-prev',
-    nextArrow: '.metric__slider-next',
   });
 
   setTimeout(() => {
@@ -253,7 +267,6 @@
   }
 
   const perforList = document.getElementById('performance-list');
-  window.perforList = perforList
   function perforItems() {
     let newData;
     if (window.datapickerValue) {
@@ -292,12 +305,11 @@
               <span class="item-value">${item.value}${item.units}</span>
             </span>
 
-           ${
-             item.data
-               ? `<ul class="performance__sublist">
+           ${item.data
+            ? `<ul class="performance__sublist">
               ${item.data
-                .map(
-                  l => `<li class="performance__subitem">
+              .map(
+                l => `<li class="performance__subitem">
                 <div class="performance__subitem-left">
                   <span class="item-title">
                     ${l.title}
@@ -306,17 +318,16 @@
                 </div>
                 <span class="item-value">${l.units}${l.value}</span>
               </li>`,
-                )
-                .join('')}
+              )
+              .join('')}
            
             </ul>`
-               : ''
-           }
+            : ''
+          }
           </li>`;
       })
       .join('');
   }
-  window.perforItems = perforItems
 
   const dataPerfor = data.performance;
   perforList.innerHTML += perforItems();
@@ -446,6 +457,25 @@
       newData = JSON.parse(JSON.stringify(dataPerfor[activeTab].data));
     }
 
+    if (!newData.length) {
+      newData = JSON.parse(JSON.stringify([dataPerfor[activeTab].data[0]]))
+
+      newData[0].date = null
+      newData[0].data = newData[0].data.map((e) => {
+        e.value = 0.01
+
+        return e
+      })
+
+    }
+
+    console.log(newData);
+
+
+
+
+
+
     perforChart.data.datasets[0].data = newData
       .reduce((prev, curr) => {
         if (prev.length === 0) {
@@ -468,9 +498,13 @@
 
     perforChart.update();
   }
-  window.updateChartPerfor = updateChartPerfor
 
-
+  window.updateAll = () => {
+    updateChartMetric();
+    perforList.innerHTML = perforItems();
+    updateChartPerfor();
+    renderWidgets()
+  }
 
   function convertDates(dates) {
     return dates.map(date => {
