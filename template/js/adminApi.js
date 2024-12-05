@@ -31,9 +31,10 @@ const perforItem = function (data, key) {
   return data.map((el, index) => `
 <tr class="bg-white border-b">
 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-  <input placeholder="data" class="input" value="${el.date}" data-index="${index}" data-coll="performance" data-kit="${key}" data-key="value"  />
+  <input placeholder="data" class="input" value="${el.date}" data-index="${index}" data-coll="performance" data-kit="${key}" data-key="date"  />
 </th>
 <td class="px-6 py-4">
+
 </td>
 <td class="px-6 py-4">
   <button data-index="${index}" data-coll="performance" data-kit="${key}" data-key="value" class="remove bg-red-600 p-2 rounded-[5px] text-[20px] text-white">Remove</button>

@@ -31201,3 +31201,35 @@ div.arco-typography, p.arco-typography {
 .arco-picker-focused .arco-picker-input-active input, .arco-picker-focused:hover .arco-picker-input-active input {
   background: transparent !important
 }
+
+.metric__widget-traffic {
+  display: flex;
+  font-size: 12px;
+  line-height: 18px;
+  gap: 6px;
+  white-space: nowrap;
+  margin-top: 5px;
+  font-weight: 500;
+  color: #737373;
+}
+
+.metric__widget-traffic-value {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.metric__widget-traffic-value.grow{
+  color: rgb(16, 157, 83);
+}
+.metric__widget-traffic-value.fall{
+  color: rgb(157, 16, 61);
+}
+
+.metric__widget-traffic-value.fall svg{
+  transform: scaleY(-1);
+}
+
+.metric__widget-traffic-value .clear{
+  margin-right: 3px;
+}
