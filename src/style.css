@@ -1,0 +1,62 @@
+.arco-picker-cell .arco-picker-date {
+  padding: 0;
+}
+
+.arco-picker-date-value {
+  height: 30px !important;
+  border-radius: 5px;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.arco-picker-cell-selected .arco-picker-date-value, .arco-picker-cell-selected .arco-picker-date-value, .arco-picker-cell-selected:hover .arco-picker-date-value,
+.arco-picker-cell-today::after {
+  background-color: #009995;
+  /* padding: 5px; */
+}
+
+.arco-picker-cell-in-range .arco-picker-date, .arco-picker-cell-hover-in-range .arco-picker-date, .arco-picker-cell-hover-range-start:not(.arco-picker-cell-range-start):not(.arco-picker-cell-range-end) .arco-picker-date-value, .arco-picker-cell-hover-range-end:not(.arco-picker-cell-range-start):not(.arco-picker-cell-range-end) .arco-picker-date-value {
+  background-color: #d9f0ef;
+}
+
+.arco-picker-cell-range-start .arco-picker-date, .arco-picker-cell-hover-range-start .arco-picker-date {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.arco-picker-cell-range-end .arco-picker-date, .arco-picker-cell-hover-range-end .arco-picker-date {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+#datepicker {
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+  background: transparent;
+}
+
+@media (any-hover:hover) {
+  #datepicker {
+    transition: all 0.3s ease 0s;
+  }
+
+  #datepicker:hover {
+    border: 1px solid #009995;
+  }
+}
+
+#datepicker .arco-picker {
+  background: transparent;
+}
+
+.arco-picker-focused, .arco-picker-focused:hover {
+  border-color: #009995 !important;
+  box-shadow: none !important;
+}
+
+.arco-picker-focused .arco-picker-input-active input, .arco-picker-focused:hover .arco-picker-input-active input {
+  background: transparent !important;
+}
