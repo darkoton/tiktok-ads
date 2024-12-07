@@ -1,6 +1,6 @@
 //< " СКРИПТЫ " >=============================================================================================================>//
 (async function () {
-  const res = await fetch("/data", {
+  const res = await fetch("http://localhost:3030/data", {
     method: "GET",
   });
   window.traffic = 0;
@@ -350,8 +350,9 @@
     } else {
       newData = JSON.parse(JSON.stringify(dataPerfor[activeTab].data));
     }
-    console.log(dataPerfor[activeTab].data)
-    console.log(window.datapickerValue)
+    
+    // console.log(dataPerfor[activeTab].data)
+    // console.log(window.datapickerValue)
 
     if (!newData.length) {
       newData = JSON.parse(JSON.stringify([dataPerfor[activeTab].data[0]]));

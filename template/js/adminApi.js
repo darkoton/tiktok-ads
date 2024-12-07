@@ -179,7 +179,7 @@ const template = function (title, collection, type) {
 let timer = null;
 
 function update() {
-  fetch('/update', {
+  fetch('http://localhost:3030/update', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -330,7 +330,7 @@ function render() {
 }
 
 let data;
-fetch('/data', {
+fetch('http://localhost:3030/data', {
   method: 'GET',
 }).then(res => {
   res.json().then(result => {
