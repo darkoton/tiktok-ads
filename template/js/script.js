@@ -1,6 +1,6 @@
 //< " СКРИПТЫ " >=============================================================================================================>//
 (async function () {
-  const res = await fetch("/data", {
+  const res = await fetch("/api/data", {
     method: "GET",
   });
   window.traffic = 0;
