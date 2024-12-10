@@ -1,5 +1,5 @@
 //< " СКРИПТЫ " >=============================================================================================================>//
-(async function () {
+async function init () {
   const res = await fetch("https://67586d4060576a194d107910.mockapi.io/data", {
     method: "GET",
   });
@@ -668,7 +668,9 @@
       day: "2-digit",
     });
   }
-})();
+}
+
+init()
 
 function getDateBefore(date, traffic) {
   let dates = date.split(",");
