@@ -14,7 +14,7 @@ app.use(express.static(path.join(__dirname, '../template')));
 app.get('/api/data', async (req, res) => {
   try {
     // const data = await fs.readFileSync(path.join(__dirname, '../data.json'));
-    const data = (await fetch("https://67586d4060576a194d107910.mockapi.io/data/1", {method:'GET'} )).json()[0]
+    const data = (await (await fetch("https://67586d4060576a194d107910.mockapi.io/data/1", {method:'GET'} )).json())[0]
     res.json(JSON.parse(data));
 
   } catch (err) {
