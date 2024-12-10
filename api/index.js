@@ -5,7 +5,7 @@ const cors = require('cors');
 
 
 const app = express();
-
+  console.log("tester log")
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
