@@ -1,5 +1,13 @@
 {
     "version": 2,
-    "builds": [{ "src": "./index.js", "use": "@vercel/node" }],
-    "routes": [{ "src": "/(.*)", "dest": "/" }]
+    "builds": [
+      { "src": "./index.js", "use": "@vercel/node" },
+      { "src": "template/**", "use": "@vercel/static" }
+    ],
+    "routes": [
+      { "src": "/api/(.*)", "dest": "./index.js" },
+      { "src": "/admin", "dest": "/template/admin.html" },
+      { "src": "/", "dest": "/template/index.html" }
+    ]
   }
+  
