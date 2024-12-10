@@ -21,13 +21,13 @@ app.get('/data', async (req, res) => {
   }
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../template', 'index.html'));
-});
+// app.get('/', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../template', 'index.html'));
+// });
 
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, '../template', 'admin.html'));
-});
+// app.get('/admin', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../template', 'admin.html'));
+// });
 
 app.put('/update', async (req, res) => {
   try {
