@@ -6,8 +6,8 @@
     ],
     "routes": [
       { "src": "/api/(.*)", "dest": "/api/index.js" },
-      { "src": "/admin", "dest": "/template/admin.html" },
-      { "src": "/", "dest": "/template/index.html" }
+      { "src": "/page/admin", "dest": "/template/admin.html" },
+      { "src": "/page/", "dest": "/template/index.html" }
     ]
   }
   
