@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, '../template')));
 
-app.get('/data', async (req, res) => {
+app.get('/api/data', async (req, res) => {
   try {
     const data = await fs.readFileSync(path.join(__dirname, '../data.json'));
     res.json(JSON.parse(data));
@@ -29,7 +29,7 @@ app.get('/data', async (req, res) => {
 //   res.sendFile(path.join(__dirname, '../template', 'admin.html'));
 // });
 
-app.put('/update', async (req, res) => {
+app.put('/api/update', async (req, res) => {
   try {
     if (req.body) {
       await fs.writeFileSync(path.join(__dirname, '../data.json'), JSON.stringify(req.body));
