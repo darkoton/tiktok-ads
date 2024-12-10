@@ -1,6 +1,6 @@
 //< " СКРИПТЫ " >=============================================================================================================>//
 (async function () {
-  const res = await fetch("/data", {
+  const res = await fetch("http://localhost:3030/data", {
     method: "GET",
   });
   window.traffic = 0;
