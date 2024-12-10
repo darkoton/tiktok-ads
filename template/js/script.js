@@ -1,6 +1,6 @@
 //< " СКРИПТЫ " >=============================================================================================================>//
 (async function () {
-  const res = await fetch("/api/data", {
+  const res = await fetch("https://67586d4060576a194d107910.mockapi.io/data", {
     method: "GET",
   });
   window.traffic = 0;

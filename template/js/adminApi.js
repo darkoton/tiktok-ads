@@ -179,7 +179,7 @@ const template = function (title, collection, type) {
 let timer = null;
 
 function update() {
-  fetch('/api/update', {
+  fetch('https://67586d4060576a194d107910.mockapi.io/data/', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -330,7 +330,7 @@ function render() {
 }
 
 let data;
-fetch('/api/data', {
+fetch('https://67586d4060576a194d107910.mockapi.io/data/1', {
   method: 'GET',
 }).then(res => {
   res.json().then(result => {
