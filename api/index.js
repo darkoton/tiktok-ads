@@ -3,9 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 
-
 const app = express();
-  console.log("tester log")
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -14,9 +12,9 @@ app.use(express.static(path.join(__dirname, '../template')));
 app.get('/api/data', async (req, res) => {
   try {
     // const data = await fs.readFileSync(path.join(__dirname, '../data.json'));
-    const response = await fetch("https://67586d4060576a194d107910.mockapi.io/data/1", {method:'GET'} )   
+    const response = await fetch("https://67586d4060576a194d107910.mockapi.io/data/1", { method: 'GET' })
     const data = await response.json()
-      
+
     res.json(data);
 
   } catch (err) {
@@ -37,8 +35,8 @@ app.put('/api/update', async (req, res) => {
   try {
     if (req.body) {
       // await fs.writeFileSync(path.join(__dirname, '../data.json'), JSON.stringify(req.body));
-      await fetch("https://67586d4060576a194d107910.mockapi.io/data/1", {method:'PUT', body: JSON.stringify(req.body)} )
-     
+      await fetch("https://67586d4060576a194d107910.mockapi.io/data/1", { method: 'PUT', body: JSON.stringify(req.body) })
+
       fetch('https://67586d4060576a194d107910.mockapi.io/data/1', {
         method: 'PUT',
         headers: {

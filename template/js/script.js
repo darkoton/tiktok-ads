@@ -1,5 +1,5 @@
 //< " СКРИПТЫ " >=============================================================================================================>//
-async function init () {
+async function init() {
   const res = await fetch("/api/data", {
     method: "GET",
   });
@@ -56,6 +56,7 @@ async function init () {
     fill: false,
     tension: 0.2,
     yAxisID: "y1",
+    pointRadius: 0
   };
 
   let metricChart = new Chart(lineChart, {
@@ -107,6 +108,10 @@ async function init () {
           grid: {
             display: false,
           },
+          ticks: {
+            autoSkip: true,
+            maxTicksLimit: 7
+          }
         },
       },
     },
@@ -119,8 +124,10 @@ async function init () {
       slick = null;
     }
 
+    const checkedWidgets = Array.from(document.querySelectorAll('.metric__widget')).filter(el => el.classList.contains('checked')).map(el => Array.from(document.querySelectorAll('.metric__widget')).indexOf(el))
+
     widgetsContainer.innerHTML = "";
-    Object.keys(dataMetric).forEach((wg) => {
+    Object.keys(dataMetric).forEach((wg, index) => {
       let trafficPercent = 0;
 
       if (window.traffic) {
@@ -140,11 +147,10 @@ async function init () {
       }
 
       widgetsContainer.innerHTML += `
-            <label for="${wg}" class="metric__widget">
+            <label for="${wg}" class="metric__widget ${checkedWidgets.includes(index) && checkedWidgets.length === 1 ? 'checked disabled' : checkedWidgets.includes(index) ? 'checked' : ''}">
           <div class="metric__widget-top">
-            <input id="${wg}" data-title="${
-        dataMetric[wg].title
-      }" type="checkbox" class="metric__widget-checkbox">
+            <input  ${checkedWidgets.includes(index) && 'checked'} id="${wg}" data-title="${dataMetric[wg].title
+        }" type="checkbox" class="metric__widget-checkbox">
             <span class="metric__widget-label">
               ${dataMetric[wg].title}
             </span>
@@ -155,46 +161,53 @@ async function init () {
             </div>
               <div class="metric__widget-value"> 
               ${dataMetric[wg].units ? dataMetric[wg].units : ""}
-              ${
-                Math.floor(
-                  dataMetric[wg].data.reduce((prev, curr) => {
-                    prev += +(window.datapickerValue
-                      ? window.datapickerValue.includes(curr.x)
-                        ? curr.y
-                        : 0
-                      : curr.y);
-                    return prev;
-                  }, 0) * 100
-                ) / 100
-              }
-            </div>
+              ${(() => {
+          const value = String(parseFloat(dataMetric[wg].data.reduce((prev, curr) => {
+            prev += +(window.datapickerValue
+              ? window.datapickerValue.includes(curr.x)
+                ? curr.y
+                : 0
+              : curr.y);
+            return prev;
+          }, 0).toFixed(2)))
 
-            ${
-              window.traffic
-                ? `
+          let [number, fraction] = value.split('.')
+
+          if (Number(number) >= 2000) {
+            number = number.slice(0, -3) + ',' + number.slice(-3)
+          }
+
+          console.log(fraction);
+
+
+          return number + (fraction ? `<span class="fraction">.${fraction}</span>` : '')
+        })()
+        }
+            </div >
+
+    ${window.traffic
+          ? `
               <div class="metric__widget-traffic">
-              <div class="metric__widget-traffic-value ${
-                trafficPercent === 0 ? '' : trafficPercent > 0 ? "grow" : "fall"
-              }">
+              <div class="metric__widget-traffic-value ${trafficPercent === 0 ? '' : trafficPercent > 0 ? "grow" : "fall"
+          }">
                  
                   <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.43903 5.83504C8.20662 5.56943 7.79343 5.56943 7.56102 5.83504L4.17989 9.69919C3.84986 10.0764 4.11772 10.6667 4.61889 10.6667H11.3812C11.8823 10.6667 12.1502 10.0764 11.8202 9.69919L8.43903 5.83504Z" fill-opacity="1"></path></svg>
-                 ${
-                  trafficPercent === 0 ?
-                  '<div class="clear">--</div>' 
-                  : ''
-                  }
-                ${ trafficPercent !== 0 ? `<span>${Math.floor(trafficPercent * 100)/100}%</span>` : ''}
+                 ${trafficPercent === 0 ?
+            '<div class="clear">--</div>'
+            : ''
+          }
+                ${trafficPercent !== 0 ? `<span>${Math.floor(trafficPercent * 100) / 100}%</span>` : ''}
               </div>            
-              <span class="metric__widget-traffic-date">Vs. previous ${
-                window.traffic
-              } days</span>
+              <span class="metric__widget-traffic-date">Vs. previous ${window.traffic
+          } days</span>
             </div>
             `
-                : ""
-            }
-        </label>    
-  `;
+          : ""
+        }
+        </label >
+    `;
     });
+
 
     slick = $(".metric__slider").slick({
       infinite: false,
@@ -205,18 +218,19 @@ async function init () {
     });
 
     renderTooltips()
+    addEventsWidget()
   }
   renderWidgets();
 
   // render tooltip
-  function renderTooltips(){
+  function renderTooltips() {
     document.querySelectorAll(".metric__widget").forEach((label) => {
       const tooltip = label.querySelector(".metric__widget-icon");
-  
+
       tippy(tooltip, {
         theme: "big",
         content: `
-        <div class="tooltip-body">
+    <div class="tooltip-body">
         <div class="tooltip-title">${dataMetric[label.htmlFor].title}</div>
         <div class="tooltip-text">${dataMetric[label.htmlFor].desc}</div>
         </div>`,
@@ -226,13 +240,7 @@ async function init () {
     });
   }
 
-  setTimeout(() => {
-    const firstWidget = document.querySelector(".metric__widget");
-    const first = firstWidget.querySelector("input");
-    first.checked = true;
-    firstWidget.classList.add("checked");
-    firstWidget.classList.add("disabled");
-
+  function addEventsWidget() {
     document.querySelectorAll(".metric__widget input").forEach((cb) => {
       cb.addEventListener("change", ({ target }) => {
         const widget = cb.closest(".metric__widget");
@@ -242,8 +250,10 @@ async function init () {
 
         if (target.checked) {
           if (chartDataY.length === 2) {
+
+
             const cbx = document.querySelector(
-              `.metric__widget #${chartDataY[0].id}`
+              `.metric__widget #${chartDataY[0].id} `
             );
             cbx.checked = false;
             const wdt = cbx.closest(".metric__widget");
@@ -265,6 +275,7 @@ async function init () {
             fill: false,
             tension: 0.2,
             yAxisID: "y2",
+            pointRadius: 0
           });
           metricChart.options.scales.y2.title.text =
             dataMetric[target.id].title;
@@ -298,6 +309,14 @@ async function init () {
         }
       });
     });
+  }
+
+  setTimeout(() => {
+    const firstWidget = document.querySelector(".metric__widget");
+    const first = firstWidget.querySelector("input");
+    first.checked = true;
+    firstWidget.classList.add("checked");
+    firstWidget.classList.add("disabled");
   }, 300);
 
   //Performance breakdown
@@ -350,7 +369,7 @@ async function init () {
     } else {
       newData = JSON.parse(JSON.stringify(dataPerfor[activeTab].data));
     }
-    
+
     // console.log(dataPerfor[activeTab].data)
     // console.log(window.datapickerValue)
 
@@ -393,45 +412,40 @@ async function init () {
 
     return newData
       .map((item) => {
-        return `<li class="performance__spoller ${
-          !item.data ? "not-spoller" : ""
-        }">
-            <span class="performance__spoller-title _active" ${
-              item.data ? "data-spoller" : ""
-            }>
+        return `<li class="performance__spoller ${!item.data ? "not-spoller" : ""
+          }">
+            <span class="performance__spoller-title _active" ${item.data ? "data-spoller" : ""
+          }>
               <div class="performance__spoller-left">
                 <span class="dot"></span> ${item.title}
 
                 <a href="#" class="performance__spoller-details">Details</a>
               </div>
 
-              <span class="item-value">${
-                !item.empty ? Math.floor(item.value * 100) / 100 : 0
-              }${item.units}</span>
+              <span class="item-value">${!item.empty ? Math.floor(item.value * 100) / 100 : 0
+          }${item.units}</span>
             </span>
 
-           ${
-             item.data
-               ? `<ul class="performance__sublist">
+           ${item.data
+            ? `<ul class="performance__sublist">
               ${item.data
-                .map(
-                  (l) => `<li class="performance__subitem">
+              .map(
+                (l) => `<li class="performance__subitem">
                 <div class="performance__subitem-left">
                   <span class="item-title">
                     ${l.title}
                   </span>
                   <span class="item-desc">(Contribution 0%)</span>
                 </div>
-                <span class="item-value">${l.units}${
-                    Math.floor(l.value * 100) / 100
+                <span class="item-value">${l.units}${Math.floor(l.value * 100) / 100
                   }</span>
               </li>`
-                )
-                .join("")}
+              )
+              .join("")}
            
             </ul>`
-               : ""
-           }
+            : ""
+          }
           </li>`;
       })
       .join("");
@@ -560,7 +574,7 @@ async function init () {
                 0
               ) * 100
             ) /
-              100 +
+            100 +
             "$";
           const textX2 = Math.round(
             (width - ctx.measureText(text2).width) / 3.3
