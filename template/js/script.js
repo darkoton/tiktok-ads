@@ -173,7 +173,7 @@ async function init() {
 
           let [number, fraction] = value.split('.')
 
-          if (Number(number) >= 2000) {
+          if (Number(number) >= 1000) {
             number = number.slice(0, -3) + ',' + number.slice(-3)
           }
 
