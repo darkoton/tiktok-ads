@@ -1380,11 +1380,68 @@ body {
   line-height: 18px
 }
 
+.metric__chart-body {
+  width: 100%;
+}
+
 .metric__chart,
 .metric__chart-canvas {
   width: 100%;
   max-height: 300px
 }
+
+.metric__chart-legends {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.metric__chart-legend {
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  display: flex;
+  font-size: 12px;
+  color: #585858;
+  font-family: Arial, Helvetica, sans-serif;
+  display: none;
+  cursor: pointer;
+}
+
+.metric__chart-legend.active {
+  text-decoration: line-through;
+}
+
+.metric__chart-legend.visible {
+  display: flex;
+}
+
+.metric__chart-legend:before {
+  content: "";
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.metric__chart-legend:nth-child(1):before {
+  background-color: #009995;
+}
+
+.metric__chart-legend:nth-child(2):before {
+  background-color: #fec24c;
+}
+
+.metric__chart-axises {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 500;
+  color: #737373;
+  padding: 0 35px;
+  margin-bottom: 5px;
+}
+
 
 .ongoing {
   min-width: 300px;

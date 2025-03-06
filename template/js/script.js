@@ -59,6 +59,18 @@ async function init() {
     pointRadius: 0
   };
 
+  const legend1 = document.getElementById('legend1')
+  const legend2 = document.getElementById('legend2')
+
+  const axis1 = document.getElementById('axis1')
+  const axis2 = document.getElementById('axis2')
+
+  legend1.textContent = dataMetric[Object.keys(dataMetric)[0]].title
+  legend1.classList.add('visible')
+ 
+  axis1.textContent = dataMetric[Object.keys(dataMetric)[0]].title + (dataMetric[Object.keys(dataMetric)[0]].units ? ` (${dataMetric[Object.keys(dataMetric)[0]].units})` : '')
+
+
   let metricChart = new Chart(lineChart, {
     type: "line",
     data: {
@@ -67,21 +79,21 @@ async function init() {
     },
     options: {
       plugins: {
-        legend: {
-          align: "start",
-          labels: {
-            usePointStyle: true, // Используем стили точек
-            pointStyle: "circle", // Устанавливаем круг
-            boxWidth: 7,
-            boxHeight: 7,
-          },
-        },
+        legend: false,
       },
       scales: {
         y1: {
+          ticks: {
+            callback: function(value) {
+              if (value >= 1000) {
+                return (value / 1000).toFixed(2).replace(/\.00$/, '') + 'к';
+              }
+              return value;
+            }
+          },
           title: {
             align: "center",
-            display: true,
+            display: false,
             text: dataMetric[Object.keys(dataMetric)[0]].title, // Название для левой оси
           },
           type: "linear",
@@ -92,9 +104,17 @@ async function init() {
           },
         },
         y2: {
+          ticks: {
+            callback: function(value) {
+              if (value >= 1000) {
+                return (value / 1000).toFixed(2).replace(/\.00$/, '') + 'к';
+              }
+              return value;
+            }
+          },
           title: {
             align: "center",
-            display: true,
+            display: false,
             text: "", // Название для левой оси
           },
           type: "linear",
@@ -115,6 +135,22 @@ async function init() {
         },
       },
     },
+  });
+
+  legend1.addEventListener('click', function() {
+    legend1.classList.toggle('active')
+    const index = this.dataset.legend;
+    const dataset = metricChart.data.datasets[index];
+    dataset.hidden = !dataset.hidden;
+    metricChart.update();
+  });
+  
+  legend2.addEventListener('click', function() {
+    legend2.classList.toggle('active')
+    const index = this.dataset.legend;
+    const dataset = metricChart.data.datasets[index];
+    dataset.hidden = !dataset.hidden;
+    metricChart.update();
   });
 
   let slick = null;
@@ -176,9 +212,6 @@ async function init() {
           if (Number(number) >= 1000) {
             number = number.slice(0, -3) + ',' + number.slice(-3)
           }
-
-          console.log(fraction);
-
 
           return number + (fraction ? `<span class="fraction">.${fraction}</span>` : '')
         })()
@@ -263,7 +296,9 @@ async function init() {
             chartDataY[0].borderColor = colors[0];
             chartDataY[0].backgroundColor = colors[0];
             chartDataY[0].yAxisID = "y1";
-            metricChart.options.scales.y1.title.text = chartDataY[0].label;
+            // metricChart.options.scales.y1.title.text = chartDataY[0].label;
+            axis1.textContent = chartDataY[0].label
+            legend1.textContent = chartDataY[0].label
           }
 
           chartDataY.push({
@@ -277,8 +312,11 @@ async function init() {
             yAxisID: "y2",
             pointRadius: 0
           });
-          metricChart.options.scales.y2.title.text =
-            dataMetric[target.id].title;
+          // metricChart.options.scales.y2.title.text =
+          //   dataMetric[target.id].title;
+            axis2.textContent = dataMetric[target.id].title + (dataMetric[target.id].units ? ` (${dataMetric[target.id].units})` : '')
+            legend2.textContent = dataMetric[target.id].title
+            legend2.classList.add('visible')
 
           widget.classList.add("checked");
           activeCheckboxes.forEach((ch) => {
@@ -301,9 +339,14 @@ async function init() {
           chartDataY[0].backgroundColor = colors[0];
           chartDataY[0].borderColor = colors[0];
           chartDataY[0].yAxisID = "y1";
-          metricChart.options.scales.y1.title.text = chartDataY[0].label;
-          metricChart.options.scales.y2.title.text = "";
-
+          // metricChart.options.scales.y1.title.text = chartDataY[0].label;
+          // metricChart.options.scales.y2.title.text = "";
+          axis1.textContent = chartDataY[0].label
+          legend1.textContent =chartDataY[0].label
+          
+          axis2.textContent = ''
+          legend2.textContent=''
+          legend2.classList.remove('visible')
           updateChartMetric();
           widget.classList.remove("checked");
         }
