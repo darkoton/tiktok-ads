@@ -19,13 +19,14 @@ async function init() {
 
   const lineChart = document.getElementById("metricChart");
   let chartDataY = [];
+  
   let chartDataX = convertDates(
     dataMetric[Object.keys(dataMetric)[0]].data.map((el) => el.x)
   );
   const colors = ["#009995", "#fec24c"];
 
   function updateChartMetric() {
-    if (window.datapickerValue) {
+    if (window.datapickerValue) {     
       metricChart.data.labels = convertDates(window.datapickerValue.split(","));
     } else {
       metricChart.data.labels = chartDataX;
@@ -78,25 +79,53 @@ async function init() {
       datasets: chartDataY,
     },
     options: {
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
       plugins: {
         legend: false,
+        tooltip: {
+          enabled: true, // Включение тултипа
+          backgroundColor: '#fff', // Цвет фона тултипа
+          titleColor: '#000', // Цвет заголовка
+          bodyColor: '#000', // Цвет текста в тултипе
+          borderColor: 'rgba(0,0,0,0.2)',
+          borderWidth: 1,
+          caretSize: 0, // Размер стрелки, указывающей на точку
+          cornerRadius: 4, // Радиус скругления углов тултипа
+          padding: 10, // Отступы внутри тултипа
+          displayColors: true, // Отключить отображение цвета для каждого значения
+          callbacks: {
+            labelColor: function(tooltipItem) {
+              // Изменяем цвет блока и добавляем кастомный стиль
+              return {
+                backgroundColor: tooltipItem.dataset.backgroundColor, // Цвет
+                borderRadius: 5, // Скругляем
+                borderWidth: 0, // Ширина рамки
+                borderColor: 'transparent' // Цвет рамки
+              };
+            }
+          }
+        }
       },
       scales: {
         y1: {
           ticks: {
-            callback: function(value) {
-              if (value >= 1000) {
+            maxTicksLimit: 5, 
+            callback: function(value) {       
+
+              if (value >= 1000 ) {
                 return (value / 1000).toFixed(2).replace(/\.00$/, '') + 'к';
               }
               return value;
-            }
+            },
           },
           title: {
             align: "center",
             display: false,
             text: dataMetric[Object.keys(dataMetric)[0]].title, // Название для левой оси
           },
-          type: "linear",
           position: "left", // Левая ось
           beginAtZero: true,
           grid: {
@@ -104,7 +133,9 @@ async function init() {
           },
         },
         y2: {
+          autoSkip: false, 
           ticks: {
+            maxTicksLimit: 5, 
             callback: function(value) {
               if (value >= 1000) {
                 return (value / 1000).toFixed(2).replace(/\.00$/, '') + 'к';
@@ -117,7 +148,6 @@ async function init() {
             display: false,
             text: "", // Название для левой оси
           },
-          type: "linear",
           position: "right", // Правая ось
           beginAtZero: true,
           grid: {
@@ -125,13 +155,26 @@ async function init() {
           },
         },
         x: {
+          position: "bottom",
+          ticks: {
+            autoSkip: false, 
+            maxTicksLimit: 1, 
+            callback: function(value, index, values) {       
+             const dates = window.datapickerValue && convertDates(window.datapickerValue.split(","))           
+
+              if (values.length < 7 || index === 0 || index === values.length - 1 || (index % Math.floor(values.length / 7) === 0 && values.length - index >= Math.floor(values.length / 7))) {            
+                if (dates) {
+                  return dates[index];
+                }else{
+                  return chartDataX[index];
+                }
+              }
+              return "";
+            }
+          },
           grid: {
             display: false,
           },
-          ticks: {
-            autoSkip: true,
-            maxTicksLimit: 7
-          }
         },
       },
     },
@@ -311,6 +354,7 @@ async function init() {
             tension: 0.2,
             yAxisID: "y2",
             pointRadius: 0
+            
           });
           // metricChart.options.scales.y2.title.text =
           //   dataMetric[target.id].title;
@@ -413,9 +457,6 @@ async function init() {
       newData = JSON.parse(JSON.stringify(dataPerfor[activeTab].data));
     }
 
-    // console.log(dataPerfor[activeTab].data)
-    // console.log(window.datapickerValue)
-
     if (!newData.length) {
       newData = JSON.parse(JSON.stringify([dataPerfor[activeTab].data[0]]));
 
@@ -499,8 +540,13 @@ async function init() {
 
   tabsList.innerHTML += tabItems(dataPerfor);
 
+  document.querySelectorAll(".card__tab")[0].classList.add('active')
   document.querySelectorAll(".card__tab").forEach((tab) =>
     tab.addEventListener("click", () => {
+
+      document.querySelectorAll(".card__tab").forEach(t=>t.classList.remove('active'))
+
+      tab.classList.add('active');
       activeTab = tab.dataset.value;
       perforChart.data.labels = dataPerfor[activeTab].data[0].data.map(
         (item) => item.title
