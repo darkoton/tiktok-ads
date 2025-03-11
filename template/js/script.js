@@ -80,8 +80,8 @@ async function init() {
     },
     options: {
       interaction: {
-        mode: 'index',
-        intersect: false,
+        mode: 'index', // Подсветка всех точек на одной вертикали
+        intersect: false, // Тултип появляется даже если не попали в точку
       },
       plugins: {
         legend: false,
@@ -92,48 +92,41 @@ async function init() {
           bodyColor: '#000', // Цвет текста в тултипе
           borderColor: 'rgba(0,0,0,0.2)',
           borderWidth: 1,
-          caretSize: 0, // Размер стрелки, указывающей на точку
-          cornerRadius: 4, // Радиус скругления углов тултипа
-          padding: 10, // Отступы внутри тултипа
-          displayColors: true, // Отключить отображение цвета для каждого значения
+          caretSize: 0, // Размер стрелки
+          cornerRadius: 4, // Радиус скругления углов
+          padding: 10, // Отступы
+          displayColors: true, 
           callbacks: {
             labelColor: function(tooltipItem) {
-              // Изменяем цвет блока и добавляем кастомный стиль
               return {
-                backgroundColor: tooltipItem.dataset.backgroundColor, // Цвет
-                borderRadius: 5, // Скругляем
-                borderWidth: 0, // Ширина рамки
-                borderColor: 'transparent' // Цвет рамки
+                backgroundColor: tooltipItem.dataset.backgroundColor,
+                borderRadius: 5,
+                borderWidth: 0,
+                borderColor: 'transparent',
               };
             }
           }
-        }
+        },
+        crosshairLine:{},
+        tickMarks: {}
       },
       scales: {
         y1: {
           ticks: {
             maxTicksLimit: 5, 
             callback: function(value) {       
-
               if (value >= 1000 ) {
                 return (value / 1000).toFixed(2).replace(/\.00$/, '') + 'к';
               }
               return value;
             },
           },
-          title: {
-            align: "center",
-            display: false,
-            text: dataMetric[Object.keys(dataMetric)[0]].title, // Название для левой оси
-          },
-          position: "left", // Левая ось
+          title: { display: false },
+          position: "left",
           beginAtZero: true,
-          grid: {
-            display: true,
-          },
+          grid: { display: true },
         },
         y2: {
-          autoSkip: false, 
           ticks: {
             maxTicksLimit: 5, 
             callback: function(value) {
@@ -143,16 +136,10 @@ async function init() {
               return value;
             }
           },
-          title: {
-            align: "center",
-            display: false,
-            text: "", // Название для левой оси
-          },
-          position: "right", // Правая ось
+          title: { display: false },
+          position: "right",
           beginAtZero: true,
-          grid: {
-            display: false,
-          },
+          grid: { display: false },
         },
         x: {
           position: "bottom",
@@ -160,25 +147,74 @@ async function init() {
             autoSkip: false, 
             maxTicksLimit: 1, 
             callback: function(value, index, values) {       
-             const dates = window.datapickerValue && convertDates(window.datapickerValue.split(","))           
-
-              if (values.length < 7 || index === 0 || index === values.length - 1 || (index % Math.floor(values.length / 7) === 0 && values.length - index >= Math.floor(values.length / 7))) {            
-                if (dates) {
-                  return dates[index];
-                }else{
-                  return chartDataX[index];
-                }
+              const dates = window.datapickerValue && convertDates(window.datapickerValue.split(","));           
+              if (values.length < 7 || index === 0 || index === values.length - 1 || 
+                 (index % Math.floor(values.length / 6) === 0 && values.length - index >= Math.floor(values.length / 7))) {            
+                return dates ? dates[index] : chartDataX[index];
               }
               return "";
             }
           },
-          grid: {
-            display: false,
-          },
+          grid: { display: false },
         },
       },
     },
+    plugins: [
+      {
+        id: "crosshairLine",
+        beforeDraw: (chart, args, options) => {   
+          if (!chart.tooltip) return;
+          
+          const ctx = chart.ctx;
+          const tooltip = chart.tooltip;          
+
+          if (!tooltip) return;
+  
+          const x = tooltip.caretX; // Получаем X координату тултипа
+  
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(x, chart.chartArea.top); // Линия от верхней границы
+          ctx.lineTo(x, chart.chartArea.bottom); // Линия до нижней границы
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = !chart.tooltip.opacity ? "transparent" : "rgba(0, 0, 0, 0.2)"; // Цвет линии
+          ctx.stroke();
+          ctx.restore();
+        }
+      },
+      {
+        id: "tickMarks",
+        beforeDraw: (chart) => {
+          // console.log(chart);
+          
+          const ctx = chart.ctx;
+          const xScale = chart.scales.x;
+  
+          ctx.save();
+          ctx.lineWidth = 0.5;
+          ctx.strokeStyle = "rgba(0, 0, 0, 0.2)"; // Цвет засечек
+  
+          xScale.ticks.forEach((tick, index) => {
+
+            if (!tick.label) return           
+            
+
+            const x = xScale.getPixelForTick(index);
+            const yBottom = chart.chartArea.bottom;
+            const yTop = yBottom + 8; // Высота засечек
+  
+            ctx.beginPath();
+            ctx.moveTo(x, yBottom);
+            ctx.lineTo(x, yTop);
+            ctx.stroke();
+          });
+  
+          ctx.restore();
+        }
+      }
+    ]
   });
+  
 
   legend1.addEventListener('click', function() {
     legend1.classList.toggle('active')
