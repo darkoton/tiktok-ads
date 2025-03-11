@@ -150,13 +150,27 @@ async function init() {
               const dates = window.datapickerValue && convertDates(window.datapickerValue.split(","));           
               if (values.length < 7 || index === 0 || index === values.length - 1 || 
                  (index % Math.floor(values.length / 6) === 0 && values.length - index >= Math.floor(values.length / 7))) {            
-                return dates ? dates[index] : chartDataX[index];
+
+                  let result = (dates ? dates[index] : chartDataX[index])
+
+                  if (index === 0) {
+                    result = "ㅤㅤㅤㅤ" + result
+                  }else if(index === values.length - 1){
+                    result = result + "ㅤㅤㅤㅤ"
+
+                  }
+
+                return result;
               }
               return "";
             }
           },
           grid: { display: false },
-        },
+          afterFit: (scale) => {
+            scale.paddingLeft += 15; // Сдвиг влево
+            scale.paddingRight += 15; // Сдвиг вправо
+          }
+          },
       },
     },
     plugins: [
