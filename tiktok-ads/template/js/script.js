@@ -71,141 +71,6 @@ async function init() {
  
   axis1.textContent = dataMetric[Object.keys(dataMetric)[0]].title + (dataMetric[Object.keys(dataMetric)[0]].units ? ` (${dataMetric[Object.keys(dataMetric)[0]].units})` : '')
 
-  const getOrCreateTooltip = (chart) => {
-    let tooltipEl = chart.canvas.parentNode.querySelector('div');
-    
-    if (!tooltipEl) {
-      tooltipEl = document.createElement('div');
-      tooltipEl.style.minWidth = '150px';
-      tooltipEl.style.background = '#fff';
-      tooltipEl.style.boxShadow = '0 0 2px 0 rgba(0,0,0,0.4)';
-      tooltipEl.style.borderRadius = '3px';
-      tooltipEl.style.color = '#000';
-      tooltipEl.style.opacity = 1;
-      tooltipEl.style.pointerEvents = 'none';
-      tooltipEl.style.position = 'absolute';
-      tooltipEl.style.transform = 'translate(-50%, 0)';
-      tooltipEl.style.transition = 'all .1s ease';
-  
-      const table = document.createElement('table');
-      table.style.margin = '0px';
-      
-    
-      tooltipEl.appendChild(table);
-      chart.canvas.parentNode.appendChild(tooltipEl);
-    }
-  
-    return tooltipEl;
-  };
-  
-  const externalTooltipHandler = (context) => {
-    // Tooltip Element
-    const {chart, tooltip} = context;
-    const tooltipEl = getOrCreateTooltip(chart);
-  
-    // Hide if no tooltip
-    if (tooltip.opacity === 0) {
-      tooltipEl.style.opacity = 0;
-      return;
-    }
-  
-    // Set Text
-    if (tooltip.body) {
-      
-      const titleLines = tooltip.title || [];
-      const bodyLines = tooltip.body.map(b => b.lines);
-  
-      const tableHead = document.createElement('thead');
-  
-      titleLines.forEach(title => {
-        const tr = document.createElement('tr');
-        tr.style.borderWidth = 0;
-  
-        const th = document.createElement('th');
-        th.style.borderWidth = 0;
-        th.style.textAlign = 'left'
-        th.style.fontSize = '12px'
-        const text = document.createTextNode(title);
-        
-  
-        th.appendChild(text);
-        tr.appendChild(th);
-        tableHead.appendChild(tr);
-      });
-  
-      const tableBody = document.createElement('tbody');
-      bodyLines.forEach((body, i) => {
-        const colors = tooltip.labelColors[i];
-  
-        const span = document.createElement('span');
-        span.style.background = colors.backgroundColor;
-        span.style.borderColor = colors.borderColor;
-        span.style.borderRadius = '50%';
-        span.style.borderWidth = '2px';
-        span.style.marginRight = '4px';
-        span.style.height = '6px';
-        span.style.width = '6px';
-        span.style.display = 'inline-block';
-  
-        const tr = document.createElement('tr');
-        tr.style.backgroundColor = 'inherit';
-        tr.style.borderWidth = 0;
-  
-        const td = document.createElement('td');
-        td.style.borderWidth = 0;
-        td.style.fontSize = '12px'
-        
-        const text = body[0]
-        
-        let [title, value] = text.split(':')
-        value = value.trim()
-        const key = title.replace(/ /g, '-').replace(/\./g, '')
-        
-        const container = document.createElement('div')
-        container.style.display = 'flex'
-        container.style.justifyContent = 'space-between'
-
-        const left = document.createElement('div')
-        left.style.display = 'flex'
-        left.style.alignItems = 'center'
-
-        left.appendChild(span)
-        left.innerHTML += title
-
-        const right = document.createElement('div')
-        right.style.fontWeight = '600'
-        right.innerHTML += (dataMetric[key].units ? dataMetric[key].units : '') +  value
-
-        container.appendChild(left)
-        container.appendChild(right)
-
-        td.appendChild(container);
-        tr.appendChild(td);
-        tableBody.appendChild(tr);
-      });
-      
-
-      const tableRoot = tooltipEl.querySelector('table');
-      tableRoot.style.width = '100%'
-      // Remove old children
-      while (tableRoot.firstChild) {
-        tableRoot.firstChild.remove();
-      }
-  
-      // Add new children
-      tableRoot.appendChild(tableHead);
-      tableRoot.appendChild(tableBody);
-    }
-  
-    const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
-  
-    // Display, position, and set styles for font
-    tooltipEl.style.opacity = 1;
-    tooltipEl.style.left = positionX + tooltip.caretX + 'px';
-    tooltipEl.style.top = positionY + tooltip.caretY + 'px';
-    tooltipEl.style.font = tooltip.options.bodyFont.string;
-    tooltipEl.style.padding = tooltip.options.padding + 'px ' + tooltip.options.padding + 'px';
-  };
 
   let metricChart = new Chart(lineChart, {
     type: "line",
@@ -221,9 +86,26 @@ async function init() {
       plugins: {
         legend: false,
         tooltip: {
-          position: 'nearest',
-          enabled: false,
-          external: externalTooltipHandler,
+          enabled: true, // Включение тултипа
+          backgroundColor: '#fff', // Цвет фона тултипа
+          titleColor: '#000', // Цвет заголовка
+          bodyColor: '#000', // Цвет текста в тултипе
+          borderColor: 'rgba(0,0,0,0.2)',
+          borderWidth: 1,
+          caretSize: 0, // Размер стрелки
+          cornerRadius: 4, // Радиус скругления углов
+          padding: 10, // Отступы
+          displayColors: true, 
+          callbacks: {
+            labelColor: function(tooltipItem) {
+              return {
+                backgroundColor: tooltipItem.dataset.backgroundColor,
+                borderRadius: 5,
+                borderWidth: 0,
+                borderColor: 'transparent',
+              };
+            }
+          }
         },
         crosshairLine:{},
         tickMarks: {}
@@ -346,7 +228,6 @@ async function init() {
       }
     ]
   });
-
   
 
   legend1.addEventListener('click', function() {

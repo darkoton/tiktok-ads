@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css">
+  <link rel="stylesheet" href="../template/css/style.css">
+  <title>Gulp-template</title>
+</head>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<body>
+  <div class="wrapper">
+    <div class="content">
+      <section class="header">
+        <div class="header__wrapper">
+          <div class="header__body">
+            <div class="header__left">
+              <div class="header__logo">
+                <img src="../template/img/logo.svg" alt="" />
+              </div>
+              <div class="header__title">Seller Center</div>
+            </div>
+            <div class="header__right">
+              <div class="header__search">
+                <svg
+                  class="theme-arco-icon theme-arco-icon-search"
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style="width: 16px; height: 16px"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M10.0744 11.0174C9.10958 11.7789 7.89115 12.2334 6.56657 12.2334C3.43696 12.2334 0.899902 9.6963 0.899902 6.56669C0.899902 3.43708 3.43696 0.900024 6.56657 0.900024C9.69618 0.900024 12.2332 3.43708 12.2332 6.56669C12.2332 7.89127 11.7788 9.1097 11.0173 10.0746L14.8496 13.907C14.9798 14.0371 14.9798 14.2482 14.8496 14.3784L14.3782 14.8498C14.2481 14.9799 14.037 14.9799 13.9068 14.8498L10.0744 11.0174ZM10.8999 6.56669C10.8999 8.95992 8.9598 10.9 6.56657 10.9C4.17334 10.9 2.23324 8.95992 2.23324 6.56669C2.23324 4.17346 4.17334 2.23336 6.56657 2.23336C8.9598 2.23336 10.8999 4.17346 10.8999 6.56669Z"
+                    fill-opacity="1"
+                  ></path>
+                </svg>
+                <input
+                  placeholder='Search: "brand"'
+                  type="text"
+                  class="header__search-input"
+                />
+                <span class="header__key-combo">Ctrl+K</span>
+              </div>
+              <button class="header__custom-button">Customer messages</button>
+              <div class="header__notification header__button">
+                <div class="header__notification-body">
+                  <svg
+                    width="1em"
+                    height="1em"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M4.94175 4.78354C5.09416 3.20866 6.41768 2.00704 7.99991 2.00704C9.58215 2.00704 10.9057 3.20866 11.0581 4.78354L11.3995 8.31206C11.4916 9.26356 12.0203 9.95386 12.5869 10.6737H3.41289C3.97949 9.95386 4.5082 9.26356 4.60028 8.31207L4.94175 4.78354ZM7.99991 0.673706C5.73105 0.673706 3.83316 2.39679 3.61462 4.6551L3.27315 8.18363C3.17037 9.24562 2.13849 10.137 1.51588 10.928C1.17165 11.3654 1.48318 12.007 2.03973 12.007H13.9601C14.5167 12.007 14.8282 11.3654 14.484 10.928C13.8613 10.137 12.8295 9.24562 12.7267 8.18363L12.3852 4.65511C12.1667 2.39679 10.2688 0.673706 7.99991 0.673706ZM10.3014 13.6718C10.3365 13.4911 10.184 13.3404 9.99992 13.3404H5.99992C5.81582 13.3404 5.66331 13.4911 5.69847 13.6718C6.12767 15.878 9.87217 15.878 10.3014 13.6718Z"
+                      fill-opacity="1"
+                    ></path>
+                  </svg>
+                  <span class="header__notification-counter">1</span>
+                </div>
+              </div>
+              <div class="header__help header__button">
+                <svg
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style="font-size: 24px"
+                >
+                  <path
+                    d="M7.11875 9.35063V7.5968L7.71608 7.5648C8.49475 7.5328 9.00787 7.10843 9.00787 6.45996 9.00787 5.81149 8.56942 5.45729 7.89742 5.45729 7.24675 5.45729 6.72008 5.77596 6.60275 6.49063L5.16675 6.25729C5.34808 4.93463 6.42542 4.16663 8.01475 4.16663 9.51088 4.16663 10.5654 5.05196 10.5654 6.41729 10.5654 7.51596 9.8403 8.30435 8.70808 8.51863V9.35063H7.11875zM6.87341 10.908C6.87341 10.332 7.31075 9.89463 7.89742 9.89463 8.48408 9.89463 8.91075 10.332 8.91075 10.908 8.91075 11.4733 8.48408 11.9106 7.89742 11.9106 7.31075 11.9106 6.87341 11.4733 6.87341 10.908z"
+                    fill-opacity="1"
+                  ></path>
+                  <path
+                    d="M0.666748 7.99996C0.666748 3.94987 3.94999 0.666626 8.00008 0.666626C12.0502 0.666626 15.3334 3.94987 15.3334 7.99996C15.3334 12.05 12.0502 15.3333 8.00008 15.3333C3.94999 15.3333 0.666748 12.05 0.666748 7.99996ZM8.00008 14C11.3138 14 14.0001 11.3137 14.0001 7.99996C14.0001 4.68625 11.3138 1.99996 8.00008 1.99996C4.68637 1.99996 2.00008 4.68625 2.00008 7.99996C2.00008 11.3137 4.68637 14 8.00008 14Z"
+                    fill-opacity="1"
+                  ></path>
+                </svg>
+                <span>Help</span>
+              </div>
+              <div class="header__profile header__button">
+                <img
+                  src="https://p19-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/587383daaf8a4eaaa4dfb4c8f2b5944f~tplv-omjb5zjo8w-origin-jpeg.jpeg?from=1345521523"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <main class="page">
+        <div
+          id="admin"
+          class="w-full max-w-[1240px] mx-auto mt-[120px]"
+        ></div>
+      </main>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../template/js/adminApi.js"></script>
+</body>
+
+</html>
